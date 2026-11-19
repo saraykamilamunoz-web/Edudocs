@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocManager Desk - Gestión Secretaría</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: linear-gradient(135deg, #0b192c, #1e3e62); 
+            padding: 30px; 
+            margin: 0; 
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Contenedor de Login */
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4), 0 0 20px rgba(255, 235, 59, 0.2);
+            text-align: center;
+        }
+        .login-card h2 {
+            color: #1e3e62;
+            font-size: 26px;
+            margin-bottom: 5px;
+            font-weight: 800;
+        }
+        .login-card p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+        .login-card label {
+            display: block;
+            text-align: left;
+            font-weight: bold;
+            font-size: 13px;
+            color: #2c3e50;
+            margin-top: 15px;
+        }
+        .login-card input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+            background: #f8fafc;
+        }
+        .login-card input:focus {
+            border-color: #2980b9;
+            outline: none;
+            background: #ffffff;
+            box-shadow: 0 0 8px rgba(41, 128, 185, 0.2);
+        }
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #2980b9, #1f618d);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 25px;
+            box-shadow: 0 4px 15px rgba(41, 128, 185, 0.4);
+            transition: all 0.2s;
+        }
+        .btn-login:hover {
+            background: linear-gradient(135deg, #1f618d, #154360);
+            transform: translateY(-2px);
+        }
+        .error-login {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 15px;
+            display: none;
+            font-weight: bold;
+        }
+
+        /* Panel Principal (Bandeja de Entrada) */
+        #panelAdmin {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 1000px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4), 0 0 20px rgba(255, 235, 59, 0.2);
+            box-sizing: border-box;
+        }
+        .header-bandeja { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 2px solid #e2e8f0; 
+            padding-bottom: 15px; 
+            margin-bottom: 20px;
+        }
+        h1.titulo-panel { 
+            color: #1e3e62; 
+            font-size: 26px; 
+            margin: 0; 
+            font-weight: 800;
+        }
+        .acciones-superiores {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .btn-limpiar { 
+            background: #e74c3c; 
+            color: white; 
+            border: none; 
+            padding: 10px 15px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+        .btn-limpiar:hover { background: #c0392b; }
+        
+        .btn-regresar-panel {
+            background: #64748b;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+        .btn-regresar-panel:hover { background: #475569; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #e2e8f0; padding: 12px; text-align: left; font-size: 14px; }
+        th { background: #1e3e62; color: white; }
+        .badge { padding: 5px 10px; border-radius: 6px; color: white; font-size: 11px; font-weight: bold; }
+        .Pendiente { background: #e67e22; }
+        .Aprobado { background: #27ae60; }
+        .btn-aprobar { background: #27ae60; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-aprobar:hover { background: #219653; }
+        .btn-ver { background: #2980b9; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-ver:hover { background: #1f618d; }
+        
+        /* Modal del Certificado */
+        #modalCertificado { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); overflow-y: auto; z-index: 1000; }
+        .hoja-carta { background: white; width: 180mm; min-height: 250mm; margin: 30px auto; padding: 20mm 20mm; box-shadow: 0 0 20px rgba(0,0,0,0.5); font-family: 'Times New Roman', Times, serif; color: #000; position: relative; box-sizing: border-box; }
+        .header-grid { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .logo-img { width: 70px; height: auto; object-fit: contain; }
+        .encabezado-texto { text-align: center; font-size: 10px; line-height: 1.2; font-weight: bold; flex: 1; padding: 0 10px; }
+        .encabezado-texto h2 { font-size: 12px; margin: 0 0 4px 0; }
+        .titulo-constar { text-align: center; font-weight: bold; font-size: 15px; margin: 25px 0; letter-spacing: 1px; }
+        .cuerpo-texto { text-align: justify; font-size: 14px; line-height: 1.8; margin-bottom: 20px; }
+        .detalles { font-size: 14px; line-height: 1.6; margin-bottom: 30px; }
+        .firma-sec { margin-top: 50px; font-size: 13px; font-weight: bold; }
+        .linea-firma { width: 220px; border-top: 1px solid #000; margin-bottom: 5px; }
+        .pie-pagina { position: absolute; bottom: 15mm; left: 20mm; right: 20mm; text-align: center; font-size: 11px; border-top: 2px solid #8B0000; padding-top: 5px; font-family: Arial, sans-serif; }
+        .acciones-modal { text-align: center; margin: 20px 0; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            #modalCertificado, #hojaImprimir, #hojaImprimir * { visibility: visible; }
+            #modalCertificado { position: absolute; left: 0; top: 0; width: 100%; background: none; }
+            .acciones-modal { display: none; }
+            .hoja-carta { box-shadow: none; margin: 0; padding: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- PANTALLA DE INICIO DE SESIÓN -->
+<div class="login-card" id="cardLogin">
+    <h2>DocManager Desk</h2>
+    <p>Acceso Administrativo Autorizado</p>
+    
+    <label>Usuario:</label>
+    <input type="text" id="userInput" placeholder="Ej: Secretario o Rector">
+
+    <label>Contraseña:</label>
+    <input type="password" id="passInput" placeholder="********">
+
+    <button class="btn-login" onclick="iniciarSesion()">Ingresar al Sistema</button>
+    <div id="errorMsg" class="error-login">Usuario o contraseña incorrectos.</div>
+    
+    <div style="margin-top: 20px;">
+        <a href="index.html" class="btn-regresar-panel" style="display: block; background: #e2e8f0; color: #1e3e62;">Regresar a la Página Principal</a>
+    </div>
+</div>
+
+<!-- PANEL ADMINISTRATIVO (BANDEJA DE ENTRADA) -->
+<div id="panelAdmin">
+    <div class="header-bandeja">
+        <div>
+            <h1 class="titulo-panel">DocManager Desk</h1>
+            <small style="color: #64748b; font-size: 14px;">Bandeja de Entrada de Solicitudes Académicas</small>
+        </div>
+        <div class="acciones-superiores">
+            <button class="btn-limpiar" onclick="limpiarBandeja()">🗑️ Limpiar Bandeja</button>
+            <a href="index.html" class="btn-regresar-panel">⬅️ Regresar al Inicio</a>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tipo de Documento</th>
+                <th>Documento</th>
+                <th>Estudiante</th>
+                <th>Correo</th>
+                <th>Trámite</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tablaSolicitudes"></tbody>
+    </table>
+</div>
+
+<!-- MODAL DEL CERTIFICADO -->
+<div id="modalCertificado">
+    <div class="acciones-modal">
+        <button onclick="window.print()" style="padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px;">🖨️ Imprimir / Guardar PDF</button>
+        <button onclick="cerrarModal()" style="padding: 10px 20px; background: #c0392b; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; margin-left: 10px;">Cerrar</button>
+    </div>
+
+    <div class="hoja-carta" id="hojaImprimir">
+        <div class="header-grid">
+            <img src="logo1.png" alt="Escudo Izquierdo" class="logo-img" onerror="this.src='https://via.placeholder.com/70?text=Logo+1'">
+            <div class="encabezado-texto">
+                <h2>I.E.D. COMPLEJO EDUCATIVO INTEGRAL SOPÓ</h2>
+                Resolución de Aprobación Educación Preescolar, Básica Primaria<br>
+                y Básica Secundaria No. 003069 del 27 de agosto de 2004<br>
+                Media Académica Resolución 003803 del 5 de julio de 2006<br>
+                Resolución Jornada Única 7103 de 27 de septiembre de 2016<br>
+                DANE 125758002915 NIT 900942296-1<br><br>
+                Certificado de Gestión de Calidad ISO 9001:2015
+            </div>
+            <img src="logo2.png" alt="Logo Derecho" class="logo-img" onerror="this.src='https://via.placeholder.com/70?text=Logo+2'">
+        </div>
+
+        <div style="text-align: center; font-weight: bold; font-size: 13px; margin: 20px 0;">
+            EL SUSCRITO RECTOR DE LA INSTITUCIÓN EDUCATIVA DEPARTAMENTAL<br>
+            COMPLEJO EDUCATIVO INTEGRAL SOPÓ
+        </div>
+
+        <div class="titulo-constar">HACE CONSTAR</div>
+
+        <div class="cuerpo-texto" id="certCuerpo"></div>
+
+        <div class="detalles" id="certDetalles">
+            Carácter: Oficial<br>
+            Jornada: Única<br>
+            Calendario: A<br>
+            Horario: 07:00 am / 1:00 pm
+        </div>
+
+        <div class="cuerpo-texto" id="certFecha"></div>
+
+        <div class="firma-sec">
+            <div class="linea-firma"></div>
+            JUAN CARLOS AGUIRRE NIETO<br>
+            Rector
+        </div>
+
+        <div style="margin-top: 30px; font-size: 11px;">
+            Elaboró:
+        </div>
+
+        <div class="pie-pagina">
+            Dirección Carrera 10 N° 1-31, Celular. 3108710141<br>
+            Correo electrónico: iedceis@gmail.com<br>
+            www.iedceis.wixsite.com/2016
+        </div>
+    </div>
+</div>
+
+<script>
+    // Validar inicio de sesión
+    function iniciarSesion() {
+        const user = document.getElementById('userInput').value.trim();
+        const pass = document.getElementById('passInput').value.trim();
+        const errorMsg = document.getElementById('errorMsg');
+
+        // Validaciones para Secretario o Rector
+        const esSecretario = (user.toLowerCase() === 'secretario' && pass === 'secretario26');
+        const esRector = (user.toLowerCase() === 'rector' && pass === 'rector26');
+
+        if (esSecretario || esRector) {
+            document.getElementById('cardLogin').style.display = 'none';
+            document.getElementById('panelAdmin').style.display = 'block';
+            cargarTabla();
+            setInterval(cargarTabla, 2000); // Actualiza cada 2 segundos
+        } else {
+            errorMsg.style.display = 'block';
+        }
+    }
+
+    async function cargarTabla() {
+        try {
+            const respuesta = await fetch('http://localhost:8080/api/solicitudes');
+            const solicitudes = await respuesta.json();
+            let html = '';
+
+            if(solicitudes.length === 0) {
+                html = `<tr><td colspan="7" style="text-align:center; color:#888; padding: 20px;">No hay solicitudes registradas en la base de datos.</td></tr>`;
+            } else {
+                solicitudes.forEach(s => {
+                    let tipoDocVal = s.tipoDoc || s.tipoDocumento || s.tipodoc || 'C.C.';
+                    html += `<tr>
+                        <td><b>${tipoDocVal}</b></td>
+                        <td>${s.doc}</td>
+                        <td>${s.nombre}</td>
+                        <td>${s.correo || 'N/A'}</td>
+                        <td>${s.tramite}</td>
+                        <td><span class="badge ${s.estado}">${s.estado}</span></td>
+                        <td>
+                            ${s.estado === 'Pendiente' 
+                                ? `<button class="btn-aprobar" onclick="aprobar(${s.id})">Aprobar</button>` 
+                                : `<button class="btn-ver" onclick="verCertificado(${s.id})">📄 Generar Documento</button>`}
+                        </td>
+                    </tr>`;
+                });
+            }
+            document.getElementById('tablaSolicitudes').innerHTML = html;
+        } catch(e) {
+            console.log("Servidor backend no disponible.");
+        }
+    }
+
+    async function limpiarBandeja() {
+        if (confirm("¿Estás seguro de que deseas eliminar todas las solicitudes de la base de datos?")) {
+            try {
+                const respuesta = await fetch('http://localhost:8080/api/solicitudes', { 
+                    method: 'DELETE' 
+                });
+                if (respuesta.ok) {
+                    cargarTabla();
+                }
+            } catch(e) {
+                console.log("Error al limpiar la bandeja.");
+            }
+        }
+    }
+
+    async function aprobar(id) {
+        const respuesta = await fetch(`http://localhost:8080/api/solicitudes/${id}/aprobar`, { method: 'PUT' });
+        if(respuesta.ok) cargarTabla();
+    }
+
+    async function verCertificado(id) {
+        try {
+            const respuesta = await fetch('http://localhost:8080/api/solicitudes');
+            const solicitudes = await respuesta.json();
+            let s = solicitudes.find(item => item.id === id);
+
+            if (s) {
+                const hoy = new Date();
+                const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+                
+                let tipoDocRaw = s.tipoDoc || s.tipoDocumento || s.tipodoc || "C.C.";
+                let tLower = tipoDocRaw.toLowerCase();
+                let tipoDocumentoTexto = "C.C. No.";
+
+                if (tLower.includes("tarjeta") || tLower.includes("ti") || tLower.includes("t.i.")) {
+                    tipoDocumentoTexto = "T.I. No.";
+                } else if (tLower.includes("cédula") || tLower.includes("cc") || tLower.includes("cedula") || tLower.includes("c.c.")) {
+                    tipoDocumentoTexto = "C.C. No.";
+                } else {
+                    tipoDocumentoTexto = tipoDocRaw + " No.";
+                }
+
+                if(s.tramite === "Paz y Salvo Académico") {
+                    document.getElementById('certCuerpo').innerHTML = `
+                        Que, <b>${s.nombre.toUpperCase()}</b> identificado(a) con <span>${tipoDocumentoTexto} ${s.doc}</span> cursó el grado <b>${s.curso}</b> de ${s.nivel} y se encuentra a la fecha <b>PAZ Y SALVO</b> por todo concepto académico y administrativo con la Institución Educativa.
+                    `;
+                    document.getElementById('certDetalles').style.display = 'none';
+                } else {
+                    document.getElementById('certCuerpo').innerHTML = `
+                        Que, <b>${s.nombre.toUpperCase()}</b> identificado(a) con <span>${tipoDocumentoTexto} ${s.doc}</span> se encuentra matriculado(a) en esta Institución Educativa cursando el grado <b>${s.curso}</b> de ${s.nivel}.
+                    `;
+                    document.getElementById('certDetalles').style.display = 'block';
+                }
+
+                document.getElementById('certFecha').innerText = `La presente constancia se expide a solicitud del interesado(a), a los ${hoy.getDate()} días del mes de ${meses[hoy.getMonth()]} de ${hoy.getFullYear()} en el municipio de Sopó.`;
+
+                document.getElementById('modalCertificado').style.display = 'block';
+            }
+        } catch(e) {
+            console.error("Error al obtener el certificado:", e);
+        }
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalCertificado').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
