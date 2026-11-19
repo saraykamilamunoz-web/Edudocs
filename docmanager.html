@@ -308,7 +308,8 @@
 
     async function cargarTabla() {
         try {
-            const respuesta = await fetch('http://localhost:8080/api/solicitudes');
+            // CONEXIÓN A RAILWAY
+            const respuesta = await fetch('https://edudocs-production.up.railway.app/api/solicitudes');
             const solicitudes = await respuesta.json();
             let html = '';
 
@@ -341,7 +342,7 @@
     async function limpiarBandeja() {
         if (confirm("¿Estás seguro de que deseas eliminar todas las solicitudes de la base de datos?")) {
             try {
-                const respuesta = await fetch('http://localhost:8080/api/solicitudes', { 
+                const respuesta = await fetch('https://edudocs-production.up.railway.app/api/solicitudes', { 
                     method: 'DELETE' 
                 });
                 if (respuesta.ok) {
@@ -354,13 +355,13 @@
     }
 
     async function aprobar(id) {
-        const respuesta = await fetch(`http://localhost:8080/api/solicitudes/${id}/aprobar`, { method: 'PUT' });
+        const respuesta = await fetch(`https://edudocs-production.up.railway.app/api/solicitudes/${id}/aprobar`, { method: 'PUT' });
         if(respuesta.ok) cargarTabla();
     }
 
     async function verCertificado(id) {
         try {
-            const respuesta = await fetch('http://localhost:8080/api/solicitudes');
+            const respuesta = await fetch('https://edudocs-production.up.railway.app/api/solicitudes');
             const solicitudes = await respuesta.json();
             let s = solicitudes.find(item => item.id === id);
 
@@ -382,18 +383,15 @@
 
                 if(s.tramite === "Paz y Salvo Académico") {
                     document.getElementById('certCuerpo').innerHTML = `
-                        Que, <b>${s.nombre.toUpperCase()}</b> identificado(a) con <span>${tipoDocumentoTexto} ${s.doc}</span> cursó el grado <b>${s.curso}</b> de ${s.nivel} y se encuentra a la fecha <b>PAZ Y SALVO</b> por todo concepto académico y administrativo con la Institución Educativa.
-                    `;
+                        Que, <b>${s.nombre.toUpperCase()}</b> identificado(a) con <span>${tipoDocumentoTexto} ${s.doc}</span> cursó el grado <b>${s.curso}</b> de ${s.nivel} y se encuentra a la fecha <b>PAZ Y SALVO</b> por todo concepto académico y administrativo con la Institución Educativa.`;
                     document.getElementById('certDetalles').style.display = 'none';
                 } else {
                     document.getElementById('certCuerpo').innerHTML = `
-                        Que, <b>${s.nombre.toUpperCase()}</b> identificado(a) con <span>${tipoDocumentoTexto} ${s.doc}</span> se encuentra matriculado(a) en esta Institución Educativa cursando el grado <b>${s.curso}</b> de ${s.nivel}.
-                    `;
+                        Que, <b>${s.nombre.toUpperCase()}</b> identificado(a) con <span>${tipoDocumentoTexto} ${s.doc}</span> se encuentra matriculado(a) en esta Institución Educativa cursando el grado <b>${s.curso}</b> de ${s.nivel}.`;
                     document.getElementById('certDetalles').style.display = 'block';
                 }
-
+                
                 document.getElementById('certFecha').innerText = `La presente constancia se expide a solicitud del interesado(a), a los ${hoy.getDate()} días del mes de ${meses[hoy.getMonth()]} de ${hoy.getFullYear()} en el municipio de Sopó.`;
-
                 document.getElementById('modalCertificado').style.display = 'block';
             }
         } catch(e) {

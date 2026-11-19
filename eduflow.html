@@ -179,7 +179,7 @@
         <p style="color: #64748b; font-size: 13px;">Su trámite ha sido ingresado al sistema.</p>
         
         <div class="alerta-texto">
-            <b>¡Atención!</b> Su solicitud ha sido enviada a <b>DocManager Desk</b>. Por favor, <b>manténgase pendiente de su correo electrónico</b> para la recepción del certificado. Recuerde que el proceso tiene una demora estimada de <b>7 días hábiles</b>. <p>Atención Secretaría Académica: Martes, miércoles y jueves de 8:00 a. m. a 12:00 m.</p>
+            <b>¡Atención!</b> Su solicitud ha sido enviada a <b>DocManager Desk</b> correctamente.
         </div>
 
         <a href="index.html" class="btn-regresar">Regresar a la Página Principal</a>
@@ -221,10 +221,11 @@
         }
 
         try {
-            const respuesta = await fetch('http://localhost:8080/api/solicitudes', {
+            // CONEXIÓN DIRECTA A TU BACKEND EN RAILWAY
+            const respuesta = await fetch('https://edudocs-production.up.railway.app/api/solicitudes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tipoDoc, doc, nombre, correo, curso, nivel, tramite, estado: 'Pendiente' })
+                body: JSON.stringify({ tipoDoc, doc, nombre, correo, curso, nivel, tramite })
             });
 
             if(respuesta.ok) {
