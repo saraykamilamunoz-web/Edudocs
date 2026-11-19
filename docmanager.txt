@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>DocManager Desk - Gestión Secretaría</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f6f9; padding: 30px; margin: 0; }
+        .card { background: white; padding: 25px; border-radius: 10px; max-width: 950px; margin: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header-bandeja { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h1 { color: #2c3e50; font-size: 22px; margin: 0; }
+        .btn-limpiar { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-limpiar:hover { background: #c0392b; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #e2e8f0; padding: 10px; text-align: left; font-size: 13px; }
+        th { background: #34495e; color: white; }
+        .badge { padding: 4px 8px; border-radius: 4px; color: white; font-size: 11px; font-weight: bold; }
+        .Pendiente { background: #e67e22; }
+        .Aprobado { background: #27ae60; }
+        .btn-aprobar { background: #27ae60; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-ver { background: #2980b9; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        
+        #modalCertificado { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); overflow-y: auto; }
+        .hoja-carta { background: white; width: 180mm; min-height: 250mm; margin: 20px auto; padding: 20mm 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.3); font-family: 'Times New Roman', Times, serif; color: #000; position: relative; box-sizing: border-box; }
+        .header-grid { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .logo-img { width: 70px; height: auto; object-fit: contain; }
+        .encabezado-texto { text-align: center; font-size: 10px; line-height: 1.2; font-weight: bold; flex: 1; padding: 0 10px; }
+        .encabezado-texto h2 { font-size: 12px; margin: 0 0 4px 0; }
+        .titulo-constar { text-align: center; font-weight: bold; font-size: 15px; margin: 25px 0; letter-spacing: 1px; }
+        .cuerpo-texto { text-align: justify; font-size: 14px; line-height: 1.8; margin-bottom: 20px; }
+        .detalles { font-size: 14px; line-height: 1.6; margin-bottom: 30px; }
+        .firma-sec { margin-top: 50px; font-size: 13px; font-weight: bold; }
+        .linea-firma { width: 220px; border-top: 1px solid #000; margin-bottom: 5px; }
+        .pie-pagina { position: absolute; bottom: 15mm; left: 20mm; right: 20mm; text-align: center; font-size: 11px; border-top: 2px solid #8B0000; padding-top: 5px; font-family: Arial, sans-serif; }
+        .acciones-modal { text-align: center; margin: 10px 0; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            #modalCertificado, #hojaImprimir, #hojaImprimir * { visibility: visible; }
+            #modalCertificado { position: absolute; left: 0; top: 0; width: 100%; background: none; }
+            .acciones-modal { display: none; }
+            .hoja-carta { box-shadow: none; margin: 0; padding: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header-bandeja">
+        <div>
+            <h1>DocManager Desk</h1>
+            <small style="color: #7f8c8d;">Bandeja de Entrada de Solicitudes</small>
+        </div>
+        <button class="btn-limpiar" onclick="limpiarBandeja()">🗑️ Limpiar Bandeja</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Documento</th>
+                <th>Estudiante</th>
+                <th>Correo</th>
+                <th>Trámite</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tablaSolicitudes"></tbody>
+    </table>
+</div>
+
+<div id="modalCertificado">
+    <div class="acciones-modal">
+        <button onclick="window.print()" style="padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">🖨️ Imprimir / Guardar PDF</button>
+        <button onclick="cerrarModal()" style="padding: 10px 20px; background: #c0392b; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-left: 10px;">Cerrar</button>
+    </div>
+
+    <div class="hoja-carta" id="hojaImprimir">
+        <div class="header-grid">
+            <img src="logo1.png" alt="Escudo Izquierdo" class="logo-img" onerror="this.src='https://via.placeholder.com/70?text=Logo+1'">
+            <div class="encabezado-texto">
+                <h2>I.E.D. COMPLEJO EDUCATIVO INTEGRAL SOPÓ</h2>
+                Resolución de Aprobación Educación Preescolar, Básica Primaria<br>
+                y Básica Secundaria No. 003069 del 27 de agosto de 2004<br>
+                Media Académica Resolución 003803 del 5 de julio de 2006<br>
+                Resolución Jornada Única 7103 de 27 de septiembre de 2016<br>
+                DANE 125758002915 NIT 900942296-1<br><br>
+                Certificado de Gestión de Calidad ISO 9001:2015
+            </div>
+            <img src="logo2.png" alt="Logo Derecho" class="logo-img" onerror="this.src='https://via.placeholder.com/70?text=Logo+2'">
+        </div>
+
+        <div style="text-align: center; font-weight: bold; font-size: 13px; margin: 20px 0;">
+            EL SUSCRITO RECTOR DE LA INSTITUCIÓN EDUCATIVA DEPARTAMENTAL<br>
+            COMPLEJO EDUCATIVO INTEGRAL SOPÓ
+        </div>
+
+        <div class="titulo-constar">HACE CONSTAR</div>
+
+        <div class="cuerpo-texto" id="certCuerpo"></div>
+
+        <div class="detalles" id="certDetalles">
+            Carácter: Oficial<br>
+            Jornada: Única<br>
+            Calendario: A<br>
+            Horario: 07:00 am / 02:00 pm
+        </div>
+
+        <div class="cuerpo-texto" id="certFecha"></div>
+
+        <div class="firma-sec">
+            <div class="linea-firma"></div>
+            JUAN CARLOS AGUIRRE NIETO<br>
+            Rector
+        </div>
+
+        <div style="margin-top: 30px; font-size: 11px;">
+            Elaboró: Eider Páez
+        </div>
+
+        <div class="pie-pagina">
+            Dirección Carrera 10 N° 1-31, Celular. 3108710141<br>
+            Correo electrónico: iedceis@gmail.com<br>
+            www.iedceis.wixsite.com/2016
+        </div>
+    </div>
+</div>
+
+<script>
+    function cargarTabla() {
+        let solicitudes = JSON.parse(localStorage.getItem('solicitudes_db')) || [];
+        let html = '';
+
+        if(solicitudes.length === 0) {
+            html = `<tr><td colspan="6" style="text-align:center; color:#888;">No hay solicitudes registradas en la bandeja.</td></tr>`;
+        } else {
+            solicitudes.forEach(s => {
+                html += `<tr>
+                    <td>${s.tipoDoc || 'T.I.'} ${s.doc}</td>
+                    <td>${s.nombre}</td>
+                    <td>${s.correo || 'N/A'}</td>
+                    <td>${s.tramite}</td>
+                    <td><span class="badge ${s.estado}">${s.estado}</span></td>
+                    <td>
+                        ${s.estado === 'Pendiente' 
+                            ? `<button class="btn-aprobar" onclick="aprobar(${s.id})">Aprobar</button>` 
+                            : `<button class="btn-ver" onclick="verCertificado(${s.id})">📄 Generar Documento</button>`}
+                    </td>
+                </tr>`;
+            });
+        }
+        document.getElementById('tablaSolicitudes').innerHTML = html;
+    }
+
+    function aprobar(id) {
+        let solicitudes = JSON.parse(localStorage.getItem('solicitudes_db')) || [];
+        let item = solicitudes.find(s => s.id === id);
+        if(item) {
+            item.estado = 'Aprobado';
+            localStorage.setItem('solicitudes_db', JSON.stringify(solicitudes));
+            cargarTabla();
+        }
+    }
+
+    function limpiarBandeja() {
+        if(confirm('¿Estás seguro de que deseas eliminar todas las solicitudes de la bandeja?')) {
+            localStorage.removeItem('solicitudes_db');
+            cargarTabla();
+        }
+    }
+
+    function verCertificado(id) {
+        let solicitudes = JSON.parse(localStorage.getItem('solicitudes_db')) || [];
+        let s = solicitudes.find(item => item.id === id);
+
+        if (s) {
+            const hoy = new Date();
+            const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+            
+            if(s.tramite === "Paz y Salvo Académico") {
+                document.getElementById('certCuerpo').innerHTML = `
+                    Que, <b>${s.nombre.toUpperCase()}</b> identificado(a) con ${s.tipoDoc || 'T.I.'} No. <span>${s.doc}</span> cursó el grado <b>${s.curso || 'ONCE (11°)'}</b> de ${s.nivel || 'Educación Media Académica'} y se encuentra a la fecha <b>PAZ Y SALVO</b> por todo concepto académico y administrativo con la Institución Educativa.
+                `;
+                document.getElementById('certDetalles').style.display = 'none';
+            } else {
+                document.getElementById('certCuerpo').innerHTML = `
+                    Que, <b>${s.nombre.toUpperCase()}</b> identificado(a) con ${s.tipoDoc || 'T.I.'} No. <span>${s.doc}</span> se encuentra matriculado(a) en esta Institución Educativa cursando el grado <b>${s.curso || 'ONCE (11°)'}</b> de ${s.nivel || 'Educación Media Académica'}.
+                `;
+                document.getElementById('certDetalles').style.display = 'block';
+            }
+
+            document.getElementById('certFecha').innerText = `La presente constancia se expide a solicitud del interesado(a), a los ${hoy.getDate()} días del mes de ${meses[hoy.getMonth()]} de ${hoy.getFullYear()} en el municipio de Sopó.`;
+
+            document.getElementById('modalCertificado').style.display = 'block';
+        }
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalCertificado').style.display = 'none';
+    }
+
+    cargarTabla();
+    setInterval(cargarTabla, 2000);
+</script>
+
+</body>
+</html>

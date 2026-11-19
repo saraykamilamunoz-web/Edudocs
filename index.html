@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edudocs System - Inicio</title>
+    <!-- Logo o miniatura para la pestaña del navegador -->
+    <link rel="icon" type="image/png" href="edudocs.png">
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0b192c; /* Fondo azul principal */
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        /* Barra superior azul */
+        header {
+            background: #1e3e62;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .header-logo {
+            width: 90px;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(255,255,255,0.4));
+        }
+        /* Centro: Solo el logo de Edudocs grande y centrado */
+        .header-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-center img {
+            width: 110px;
+            height: 110px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: white;
+            padding: 4px;
+            box-shadow: 0 0 25px rgba(255, 238, 88, 0.8);
+        }
+        /* Contenido principal */
+        .container {
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 0 20px;
+            text-align: center;
+            flex: 1;
+        }
+        .welcome-section h2 {
+            color: #ffeb3b;
+            font-size: 36px;
+            margin-bottom: 12px;
+            font-weight: 800;
+            text-shadow: 0 0 15px rgba(255, 235, 59, 0.6);
+        }
+        .welcome-section p {
+            color: #b0c4de;
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 750px;
+            margin: 0 auto 40px auto;
+        }
+        /* Bloques de acceso en blanco más compactos y limpios */
+        .blocks-container {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .block-card {
+            background: #ffffff;
+            color: #333333;
+            padding: 40px 30px;
+            border-radius: 16px;
+            width: 340px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4), 0 0 20px rgba(255, 235, 59, 0.2);
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .block-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 25px rgba(255, 235, 59, 0.4);
+        }
+        /* Botón Verde (Eduflow) adaptado dentro de la tarjeta */
+        .btn-eduflow-container {
+            display: block;
+            background: #27ae60;
+            color: white;
+            text-decoration: none;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+            transition: all 0.2s ease;
+        }
+        .btn-eduflow-container:hover {
+            background: #219653;
+            transform: translateY(-2px);
+        }
+        .btn-titulo {
+            font-size: 20px;
+            font-weight: bold;
+            display: block;
+        }
+        .btn-sub {
+            font-size: 13px;
+            opacity: 0.95;
+            margin-top: 4px;
+            display: block;
+        }
+        /* Botón Azul (DocManager) adaptado dentro de la tarjeta */
+        .btn-docmanager-container {
+            display: block;
+            background: #2980b9;
+            color: white;
+            text-decoration: none;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(41, 128, 185, 0.4);
+            transition: all 0.2s ease;
+        }
+        .btn-docmanager-container:hover {
+            background: #1f618d;
+            transform: translateY(-2px);
+        }
+        /* Pie de página AMARILLO */
+        footer {
+            background-color: #ffeb3b;
+            color: #1e3e62;
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: auto;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+        }
+        footer p {
+            margin: 3px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BARRA SUPERIOR AZUL -->
+    <header>
+        <!-- Esquina Izquierda: Escudo del Colegio -->
+        <img src="logo1.png" alt="Escudo Colegio" class="header-logo" title="Escudo Colegio" onerror="this.src='https://via.placeholder.com/90?text=Logo+1'">
+        
+        <!-- Centro: Solo el Logo de Edudocs grande y centrado -->
+        <div class="header-center">
+            <img src="edudocs.png" alt="Logo Edudocs" title="Edudocs System" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/8/84/Logo_SENA_svg.svg'">
+        </div>
+
+        <!-- Esquina Derecha: Logo del SENA -->
+        <img src="SENA.png.PNG" alt="Logo SENA" class="header-logo" title="Logo SENA" onerror="this.src='https://via.placeholder.com/90?text=SENA'">
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="container">
+        <div class="welcome-section">
+            <h2>¡Bienvenido(a) a Edudocs System!</h2>
+            <p>
+                Plataforma digital diseñada para agilizar y optimizar la gestión de certificados y trámites académicos con total transparencia y eficiencia.
+            </p>
+        </div>
+
+        <!-- BLOQUES DE ACCESO -->
+        <div class="blocks-container">
+            <!-- Bloque Eduflow Express -->
+            <div class="block-card">
+                <a href="eduflow.html" class="btn-eduflow-container">
+                    <span class="btn-titulo">Eduflow Express</span>
+                    <span class="btn-sub">Estudiantes y Familias</span>
+                </a>
+            </div>
+
+            <!-- Bloque DocManager Desk -->
+            <div class="block-card">
+                <a href="docmanager.html" class="btn-docmanager-container">
+                    <span class="btn-titulo">DocManager Desk</span>
+                    <span class="btn-sub">Administrativos</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIE DE PÁGINA AMARILLO -->
+    <footer>
+        <p>I.E.D. Complejo Educativo Integral Sopó</p>
+        <p>Dirección Institucional: Carrera 10 N° 1-31 | Sede Mapas: Cl. 3 Sur #8-98</p>
+        <p>Atención Secretaría Académica: Martes, miércoles y jueves de 8:00 a. m. a 12:00 m.</p>
+        <p>Celular: 3108710141 | Correo electrónico: iedceis@gmail.com</p>
+    </footer>
+
+</body>
+</html> 

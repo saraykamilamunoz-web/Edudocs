@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduFlow Express - Portal de Solicitudes</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: linear-gradient(135deg, #0b192c, #1e3e62); 
+            padding: 40px 20px; 
+            margin: 0; 
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .card { 
+            background: white; 
+            padding: 35px; 
+            border-radius: 16px; 
+            width: 100%;
+            max-width: 480px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4), 0 0 25px rgba(255, 235, 59, 0.2);
+            box-sizing: border-box;
+        }
+        h1 { 
+            color: #1e3e62; 
+            font-size: 28px; 
+            text-align: center; 
+            margin-bottom: 5px; 
+            font-weight: 800;
+        }
+        p.subtitulo { 
+            color: #7f8c8d; 
+            text-align: center; 
+            font-size: 14px; 
+            margin-bottom: 25px; 
+        }
+        label { 
+            font-weight: bold; 
+            font-size: 13px; 
+            color: #2c3e50; 
+            display: block;
+            margin-top: 12px;
+        }
+        input, select { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 6px 0 12px 0; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 14px;
+            background: #f8fafc;
+        }
+        input:focus, select:focus {
+            border-color: #27ae60;
+            outline: none;
+            background: #ffffff;
+            box-shadow: 0 0 8px rgba(39, 174, 96, 0.2);
+        }
+        button.btn-enviar { 
+            width: 100%; 
+            padding: 14px; 
+            background: linear-gradient(135deg, #27ae60, #219653); 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 16px; 
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+            transition: all 0.2s ease;
+        }
+        button.btn-enviar:hover { 
+            background: linear-gradient(135deg, #219653, #1e8449); 
+            transform: translateY(-2px);
+        }
+
+        /* Pantalla de confirmación */
+        #mensajeExito {
+            display: none;
+            text-align: center;
+        }
+        .icono-exito {
+            font-size: 50px;
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+        .alerta-texto {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .btn-regresar {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #1e3e62;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: background 0.2s;
+            text-align: center;
+        }
+        .btn-regresar:hover {
+            background: #162c46;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <!-- FORMULARIO DE SOLICITUD -->
+    <div id="contenedorForm">
+        <h1>EduFlow Express</h1>
+        <p class="subtitulo">Solicitudes Académicas en Línea</p>
+        
+        <label>Tipo de Documento:</label>
+        <select id="tipoDoc">
+            <option value="T.I.">Tarjeta de Identidad (T.I.)</option>
+            <option value="C.C.">Cédula de Ciudadanía (C.C.)</option>
+        </select>
+
+        <label>Número de Documento:</label>
+        <input type="text" id="doc" placeholder="Ej: 1012345678" oninput="validarNumeros(this)">
+
+        <label>Nombre Completo:</label>
+        <input type="text" id="nombre" placeholder="Ej: Juan Pérez" oninput="validarLetras(this)">
+
+        <label>Correo Electrónico (para envío):</label>
+        <input type="email" id="correo" placeholder="ejemplo@correo.com">
+
+        <label>Curso / Grado:</label>
+        <select id="curso">
+            <optgroup label="Educación Básica Primaria">
+                <option value="PRIMERO (1°)">PRIMERO (1°)</option>
+                <option value="SEGUNDO (2°)">SEGUNDO (2°)</option>
+                <option value="TERCERO (3°)">TERCERO (3°)</option>
+                <option value="CUARTO (4°)">CUARTO (4°)</option>
+                <option value="QUINTO (5°)">QUINTO (5°)</option>
+            </optgroup>
+            <optgroup label="Educación Básica Secundaria">
+                <option value="SEXTO (6°)">SEXTO (6°)</option>
+                <option value="SÉPTIMO (7°)">SÉPTIMO (7°)</option>
+                <option value="OCTAVO (8°)">OCTAVO (8°)</option>
+                <option value="NOVENO (9°)">NOVENO (9°)</option>
+            </optgroup>
+            <optgroup label="Educación Media Académica">
+                <option value="DÉCIMO (10°)">DÉCIMO (10°)</option>
+                <option value="ONCE (11°)" selected>ONCE (11°)</option>
+            </optgroup>
+        </select>
+
+        <label>Tipo de Trámite:</label>
+        <select id="tramite">
+            <option value="Certificado de Estudio">Certificado de Estudio</option>
+            <option value="Paz y Salvo Académico">Paz y Salvo Académico</option>
+        </select>
+
+        <button class="btn-enviar" onclick="enviarSolicitud()">Enviar Solicitud</button>
+    </div>
+
+    <!-- PANTALLA DE CONFIRMACIÓN -->
+    <div id="mensajeExito">
+        <div class="icono-exito">✅</div>
+        <h2 style="color: #1e3e62; margin-bottom: 5px;">¡Solicitud Exitosa!</h2>
+        <p style="color: #64748b; font-size: 13px;">Su trámite ha sido ingresado al sistema.</p>
+        
+        <div class="alerta-texto">
+            <b>¡Atención!</b> Su solicitud ha sido enviada a <b>DocManager Desk</b>. Por favor, <b>manténgase pendiente de su correo electrónico</b> para la recepción del certificado. Recuerde que el proceso tiene una demora estimada de <b>7 días hábiles</b>. <p>Atención Secretaría Académica: Martes, miércoles y jueves de 8:00 a. m. a 12:00 m.</p>
+        </div>
+
+        <a href="index.html" class="btn-regresar">Regresar a la Página Principal</a>
+    </div>
+</div>
+
+<script>
+    function validarNumeros(input) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+    }
+
+    function validarLetras(input) {
+        input.value = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    }
+
+    function obtenerNivelAcademico(curso) {
+        if (["PRIMERO (1°)", "SEGUNDO (2°)", "TERCERO (3°)", "CUARTO (4°)", "QUINTO (5°)"].includes(curso)) {
+            return "Educación Básica Primaria";
+        } else if (["SEXTO (6°)", "SÉPTIMO (7°)", "OCTAVO (8°)", "NOVENO (9°)"].includes(curso)) {
+            return "Educación Básica Secundaria";
+        } else {
+            return "Educación Media Académica";
+        }
+    }
+
+    async function enviarSolicitud() {
+        let tipoDocSelect = document.getElementById('tipoDoc');
+        let tipoDoc = tipoDocSelect ? tipoDocSelect.value : 'T.I.';
+        let doc = document.getElementById('doc').value;
+        let nombre = document.getElementById('nombre').value;
+        let correo = document.getElementById('correo').value;
+        let curso = document.getElementById('curso').value;
+        let tramite = document.getElementById('tramite').value;
+        let nivel = obtenerNivelAcademico(curso);
+
+        if(!doc || !nombre || !correo) {
+            alert('Por favor completa todos los campos obligatorios.');
+            return;
+        }
+
+        try {
+            const respuesta = await fetch('http://localhost:8080/api/solicitudes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tipoDoc, doc, nombre, correo, curso, nivel, tramite, estado: 'Pendiente' })
+            });
+
+            if(respuesta.ok) {
+                document.getElementById('contenedorForm').style.display = 'none';
+                document.getElementById('mensajeExito').style.display = 'block';
+            } else {
+                alert('Error al conectar con la base de datos.');
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert('No se pudo establecer conexión con el servidor backend.');
+        }
+    }
+</script>
+
+</body>
+</html>
