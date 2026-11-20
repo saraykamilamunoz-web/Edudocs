@@ -34,12 +34,10 @@ public class SolicitudController {
 
     @PostMapping
     public Solicitud guardar(@RequestBody Solicitud solicitud) {
-        // Asegurar tipo de documento por defecto si viene vacío
         if (solicitud.getTipoDoc() == null || solicitud.getTipoDoc().trim().isEmpty()) {
             solicitud.setTipoDoc("C.C.");
         }
         
-        // Asegurar estado inicial por defecto
         if (solicitud.getEstado() == null) {
             solicitud.setEstado("Pendiente");
         }
@@ -54,7 +52,6 @@ public class SolicitudController {
         return repository.save(s);
     }
 
-    // Método para generar el documento automáticamente
     @GetMapping("/{id}/generar")
     public ResponseEntity<byte[]> generarDocumento(@PathVariable Long id) {
         Solicitud solicitud = repository.findById(id).orElseThrow();
