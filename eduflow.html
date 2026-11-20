@@ -113,6 +113,7 @@
             box-sizing: border-box;
             transition: background 0.2s;
             text-align: center;
+            margin-top: 10px;
         }
         .btn-regresar:hover {
             background: #162c46;
@@ -179,10 +180,12 @@
         <p style="color: #64748b; font-size: 13px;">Su trámite ha sido ingresado al sistema.</p>
         
         <div class="alerta-texto">
-            <b>¡Atención!</b> Su solicitud ha sido enviada a <b>DocManager Desk</b> correctamente. El estado será procesado en breve.
+            <b>¡Atención!</b> Su solicitud ha sido enviada a <b>DocManager Desk</b> correctamente. 
+            Por favor, esté pendiente de su correo electrónico. Su trámite será aprobado en un plazo máximo de <b>7 días hábiles</b> mientras la secretaría académica lo gestiona.
         </div>
 
-        <a href="eduflow.html" class="btn-regresar">Enviar otra solicitud</a>
+        <a href="index.html" class="btn-regresar">Regresar a la Página Principal</a>
+        <a href="eduflow.html" class="btn-regresar" style="background: #27ae60;">Enviar otra solicitud</a>
     </div>
 </div>
 
@@ -221,7 +224,6 @@
         }
 
         try {
-            // CORREGIDO: Se agregaron las llaves {} que faltaban en el fetch
             const respuesta = await fetch('https://edudocs-production.up.railway.app/api/solicitudes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
